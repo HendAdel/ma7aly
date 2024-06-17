@@ -26,4 +26,50 @@ class SqlHelper {
       print('Error in Creating database!  : ${e}');
     }
   }
+
+  Future<bool> createTables() async {
+    try {
+      var batch = db!.batch();
+      batch.execute("""Create table If not exists categories(
+      catId integer primary key,
+      catName text,
+      catDescription text
+      ) """);
+      batch.execute("""Create table If not exists products(
+      proId integer primary key,
+      proName text,
+      proDescription text,
+      price double,
+      stockCount integer,
+      image blob,
+      categoryId integer
+      ) """);
+      batch.execute("""Create table If not exists customers(
+      custId integer primary key,
+      custName text,
+      custAddress text,
+      custPhoneNo text
+      ) """);
+      batch.execute("""Create table If not exists orders(
+      Id integer primary key,
+      invoiceNo text,
+      orderDate text,
+      discount double,
+      customerId integer
+      ) """);
+      batch.execute("""Create table If not exists ordersProducts(
+      Id integer primary key,
+      orderId integer,
+      productId integer,      
+      productCount integer
+      ) """);
+
+      var createTablesResult = await batch.commit();
+      print("Tables created successfully: $createTablesResult");
+      return true;
+    } catch (e) {
+      print("Error in creating tables: $e");
+      return false;
+    }
+  }
 }

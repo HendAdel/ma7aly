@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/pages/home.dart';
 import 'package:ma7aly/helpers/design_helper.dart';
+import 'package:get_it/get_it.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   var sqlHelper = SqlHelper();
   await sqlHelper.initDatabase();
-  print(sqlHelper.db);
+  if (sqlHelper.db != null) {
+    GetIt.I.registerSingleton<SqlHelper>(sqlHelper);
+  }
   runApp(const MyApp());
 }
 

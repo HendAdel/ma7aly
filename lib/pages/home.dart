@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
+import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/widgets/header_card.dart';
 import 'package:ma7aly/widgets/grid_view_items.dart';
 
@@ -13,6 +15,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    initHomePage();
+    super.initState();
+  }
+
+  void initHomePage() async {
+    await GetIt.I.get<SqlHelper>().createTables();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
