@@ -56,21 +56,35 @@ class _HomePageState extends State<HomePage> {
                 crossAxisSpacing: 20,
                 children: [
                   GridViewItems(
-                      label: "All Sales",
-                      color: Color(0xffe9ad62),
-                      iconData: Icons.list_alt_outlined),
+                    label: "All Sales",
+                    color: Color(0xffe9ad62),
+                    iconData: Icons.list_alt_outlined,
+                    onTap: () {},
+                  ),
                   GridViewItems(
-                      label: "Products",
-                      color: Color(0xffda8999),
-                      iconData: Icons.inventory_2),
+                    label: "Products",
+                    color: Color(0xffda8999),
+                    iconData: Icons.inventory_2,
+                    onTap: () {},
+                  ),
                   GridViewItems(
-                      label: "Clients",
-                      color: Color(0xff00c1fc),
-                      iconData: Icons.group),
+                    label: "Clients",
+                    color: Color(0xff00c1fc),
+                    iconData: Icons.group,
+                    onTap: () {},
+                  ),
                   GridViewItems(
-                      label: "New Sale",
-                      color: Color(0xff64be61),
-                      iconData: Icons.shopping_basket)
+                    label: "New Sale",
+                    color: Color(0xff64be61),
+                    iconData: Icons.shopping_basket,
+                    onTap: () {},
+                  ),
+                  GridViewItems(
+                    label: "Categories",
+                    color: Colors.grey,
+                    iconData: Icons.category,
+                    onTap: () {},
+                  ),
                 ],
               ))
             ],

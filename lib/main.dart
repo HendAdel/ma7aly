@@ -1,20 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/pages/home.dart';
 import 'package:ma7aly/helpers/design_helper.dart';
 
-void main() {
-  
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  var sqlHelper = SqlHelper();
+  await sqlHelper.initDatabase();
+  print(sqlHelper.db);
   runApp(const MyApp());
 }
 
 var designHelper = DesignHelper();
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: 'محلي',
       theme: ThemeData(
@@ -31,6 +35,4 @@ class MyApp extends StatelessWidget {
       home: const HomePage(),
     );
   }
-
- 
 }
