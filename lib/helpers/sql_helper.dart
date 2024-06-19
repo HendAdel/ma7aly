@@ -13,8 +13,8 @@ class SqlHelper {
         print("==================> Db Created");
         var sqliteVersion =
             (await db!.rawQuery('select sqlite_version()')).first.values.first;
-        print(db.hashCode);
-        // print(sqliteVersion); // should print 3.39.3
+        // print(db.hashCode);
+        print(sqliteVersion); // should print 3.39.3
       } else {
         db = await openDatabase(
           'ma7aly.db',

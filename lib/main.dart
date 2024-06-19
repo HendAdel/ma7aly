@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'محلي',
       theme: ThemeData(
         appBarTheme: const AppBarTheme(
@@ -31,7 +32,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.white,
           cardColor: Colors.blue.shade100,
           errorColor: Colors.red,
-          primarySwatch: designHelper.getMaterialColor(Color(0xff0058da)),
+          primarySwatch: designHelper.getMaterialColor(const Color(0xff0058da)),
         ),
         useMaterial3: true,
       ),

@@ -4,6 +4,12 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
+import 'package:ma7aly/pages/categories.dart';
+import 'package:ma7aly/pages/customers.dart';
+import 'package:ma7aly/pages/new_order.dart';
+import 'package:ma7aly/pages/orders.dart';
+import 'package:ma7aly/pages/products.dart';
+import 'package:ma7aly/pages/test_table.dart';
 import 'package:ma7aly/widgets/header_card.dart';
 import 'package:ma7aly/widgets/grid_view_items.dart';
 
@@ -71,31 +77,56 @@ class _HomePageState extends State<HomePage> {
                     label: "All Sales",
                     color: Color(0xffe9ad62),
                     iconData: Icons.list_alt_outlined,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => OrdersPage()));
+                    },
                   ),
                   GridViewItems(
                     label: "Products",
                     color: Color(0xffda8999),
                     iconData: Icons.inventory_2,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ProductsPage()));
+                    },
                   ),
                   GridViewItems(
                     label: "Clients",
                     color: Color(0xff00c1fc),
                     iconData: Icons.group,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CustomersPage()));
+                    },
                   ),
                   GridViewItems(
                     label: "New Sale",
                     color: Color(0xff64be61),
                     iconData: Icons.shopping_basket,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => NewOrderPage()));
+                    },
                   ),
                   GridViewItems(
                     label: "Categories",
                     color: Colors.grey,
                     iconData: Icons.category,
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CategoriesPage()));
+                    },
                   ),
                 ],
               ))

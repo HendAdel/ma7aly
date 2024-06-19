@@ -57,14 +57,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  data_table_2:
+    dependency: "direct main"
+    description:
+      name: data_table_2
+      sha256: f02ec9b24f44420816a87370ff4f4e533e15b274f6267e4c9a88a585ad1a0473
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.15"
   dev_build:
     dependency: transitive
     description:
       name: dev_build
-      sha256: "863842423cffd927af831b6b576cd391b5f5de2f3f62b83c25ca970af96ee708"
+      sha256: "4a4c8e3aaaaa9a7de4039dc711ee573de5612a35a4469d01ecf30e5ae74cbcfd"
       url: "https://pub.dev"
     source: hosted
-    version: "0.16.7+3"
+    version: "0.16.7+4"
   fake_async:
     dependency: transitive
     description:
@@ -123,6 +131,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.2"
+  intl:
+    dependency: transitive
+    description:
+      name: intl
+      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.0"
   leak_tracker:
     dependency: transitive
     description:
@@ -187,6 +203,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.9.0"
+  pluto_grid:
+    dependency: "direct main"
+    description:
+      name: pluto_grid
+      sha256: "1d4cd9d2652742b556aa9b3230cc64672a3f63c34a9acc80fef794ab36ad903b"
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.0.0"
   pool:
     dependency: transitive
     description:
@@ -211,6 +235,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  rxdart:
+    dependency: transitive
+    description:
+      name: rxdart
+      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.27.7"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -354,4 +386,4 @@ packages:
     version: "3.1.2"
 sdks:
   dart: ">=3.3.3 <4.0.0"
-  flutter: ">=3.7.0"
+  flutter: ">=3.10.0"
