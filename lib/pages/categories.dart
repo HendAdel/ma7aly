@@ -59,49 +59,89 @@ class _CategoriesPageState extends State<CategoriesPage> {
         ],
       ),
       body: Padding(
-          padding: const EdgeInsets.all(20),
-          child: categoriesList == null
-              ? CircularProgressIndicator()
-              : SingleChildScrollView(
-                  child: PaginatedDataTable(
-                    showEmptyRows: false,
-                    horizontalMargin: 20,
-                    rowsPerPage: 10,
-                    checkboxHorizontalMargin: 12,
-                    columnSpacing: 20,
-                    showFirstLastButtons: true,
-                    // headingTextStyle: TextStyle(color: Colors.white, fontSize: 14),
-                    headingRowColor: MaterialStatePropertyAll(
-                        Theme.of(context).primaryColor),
-                    // border: TableBorder.all(color: Colors.black),
-                    // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-                    // showBottomBorder: true,
-                    showCheckboxColumn: true,
-                    columns: [
-                      DataColumn(label: Text('Category ID')),
-                      DataColumn(label: Text('Category Name')),
-                      DataColumn(label: Text('Category Description')),
-                      DataColumn(label: Text('Actions')),
-                    ],
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            TextField(
+              decoration: InputDecoration(
+                prefixIcon: Icon(Icons.search),
+                enabledBorder: OutlineInputBorder(),
+                border: OutlineInputBorder(),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Theme.of(context).primaryColor),
+                ),
+                labelText: 'Search',
+              ),
+              onChanged: (text) async {
+                if (text == '') {
+                  getCategories();
+                  return;
+                }
+                var sqlHelper = await GetIt.I.get<SqlHelper>();
+                var searchResult =
+                    await sqlHelper.db!.rawQuery("""Select * from categories
+                  Where catName like '%$text%' Or catDescription like '%$text%' """);
+                if (searchResult.isNotEmpty) {
+                  categoriesList = [];
+                  for (var cat in searchResult) {
+                    categoriesList?.add(Category.fromJson(cat));
+                  }
+                } else {
+                  categoriesList = [];
+                }
+                setState(() {});
+              },
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            categoriesList == null
+                ? const CircularProgressIndicator()
+                : Expanded(
+                    child: SingleChildScrollView(
+                      child: PaginatedDataTable(
+                        showEmptyRows: false,
+                        horizontalMargin: 20,
+                        rowsPerPage: 10,
+                        checkboxHorizontalMargin: 12,
+                        columnSpacing: 20,
+                        showFirstLastButtons: true,
+                        // headingTextStyle: TextStyle(color: Colors.white, fontSize: 14),
+                        headingRowColor: MaterialStatePropertyAll(
+                            Theme.of(context).primaryColor),
+                        // border: TableBorder.all(color: Colors.black),
+                        // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
+                        // showBottomBorder: true,
+                        showCheckboxColumn: true,
+                        columns: const [
+                          DataColumn(label: Text('Category ID')),
+                          DataColumn(label: Text('Category Name')),
+                          DataColumn(label: Text('Category Description')),
+                          DataColumn(label: Text('Actions')),
+                        ],
 
-                    source: DataSource(
-                        categories: categoriesList!,
-                        onUpdate: (Category) async {
-                          var updateResult = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (ctx) => CategoryEdit(
-                                        category: Category,
-                                      )));
-                          if (updateResult ?? false) {
-                            getCategories();
-                          }
-                        },
-                        onDelete: (Category) async {
-                          await onDeleteCat(Category);
-                        }),
+                        source: DataSource(
+                            categories: categoriesList!,
+                            onUpdate: (Category) async {
+                              var updateResult = await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctx) => CategoryEdit(
+                                            category: Category,
+                                          )));
+                              if (updateResult ?? false) {
+                                getCategories();
+                              }
+                            },
+                            onDelete: (Category) async {
+                              await onDeleteCat(Category);
+                            }),
+                      ),
+                    ),
                   ),
-                )),
+          ],
+        ),
+      ),
     );
   }
 

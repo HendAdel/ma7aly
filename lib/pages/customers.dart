@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/models/customer.dart';
@@ -59,44 +60,85 @@ class _CustomersPageState extends State<CustomersPage> {
       ),
       body: Padding(
           padding: const EdgeInsets.all(20),
-          child: customersList == null
-              ? CircularProgressIndicator()
-              : SingleChildScrollView(
-                  child: PaginatedDataTable(
-                    showEmptyRows: false,
-                    horizontalMargin: 20,
-                    rowsPerPage: 10,
-                    checkboxHorizontalMargin: 12,
-                    columnSpacing: 20,
-                    showFirstLastButtons: true,
-                    headingRowColor: MaterialStatePropertyAll(
-                        Theme.of(context).primaryColor),
-                    showCheckboxColumn: true,
-                    columns: [
-                      DataColumn(label: Text('customer ID')),
-                      DataColumn(label: Text('customer Name')),
-                      DataColumn(label: Text('customer Address')),
-                      DataColumn(label: Text('customer Phone')),
-                      DataColumn(label: Text('Actions')),
-                    ],
-                    source: DataSource(
-                        customers: customersList!,
-                        onUpdate: (Customer) async {
-                          var updateResult = await Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (ctx) => CustomerEdit(
-                                        customer: Customer,
-                                      )));
-                          if (updateResult ?? false) {
-                            getCustomers();
-                          }
-                        },
-                        onDelete: (Customer) async {
-                          await onDeleteCust(Customer);
-                        }),
+          child: Column(
+            children: [
+              TextField(
+                decoration: InputDecoration(
+                  prefixIcon: Icon(Icons.search),
+                  enabledBorder: OutlineInputBorder(),
+                  border: OutlineInputBorder(),
+                  focusedBorder: OutlineInputBorder(
+                    borderSide:
+                        BorderSide(color: Theme.of(context).primaryColor),
                   ),
-                )),
+                  labelText: 'Search',
+                ),
+                onChanged: (text) async {
+                  if (text == '') {
+                    getCustomers();
+                    return;
+                  }
+                  var sqlHelper = await GetIt.I.get<SqlHelper>();
+                  var searchResult =
+                      await sqlHelper.db!.rawQuery("""Select * from customers
+                  Where custName like '%$text%' Or custAddress like '%$text%' 
+                  Or custPhoneNo like '%$text%' """);
+                  if (searchResult.isNotEmpty) {
+                    customersList = [];
+                    for (var cat in searchResult) {
+                      customersList?.add(Customer.fromJson(cat));
+                    }
+                  } else {
+                    customersList = [];
+                  }
+                  setState(() {});
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              customersList == null
+                  ? const CircularProgressIndicator()
+                  : Expanded(
+                      child: SingleChildScrollView(
+                        child: PaginatedDataTable(
+                          showEmptyRows: false,
+                          horizontalMargin: 20,
+                          rowsPerPage: 10,
+                          checkboxHorizontalMargin: 12,
+                          columnSpacing: 20,
+                          showFirstLastButtons: true,
+                          headingRowColor: MaterialStatePropertyAll(
+                              Theme.of(context).primaryColor),
+                          showCheckboxColumn: true,
+                          columns: [
+                            DataColumn(label: Text('customer ID')),
+                            DataColumn(label: Text('customer Name')),
+                            DataColumn(label: Text('customer Address')),
+                            DataColumn(label: Text('customer Phone')),
+                            DataColumn(label: Text('Actions')),
+                          ],
+                          source: DataSource(
+                              customers: customersList!,
+                              onUpdate: (Customer) async {
+                                var updateResult = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) => CustomerEdit(
+                                              customer: Customer,
+                                            )));
+                                if (updateResult ?? false) {
+                                  getCustomers();
+                                }
+                              },
+                              onDelete: (Customer) async {
+                                await onDeleteCust(Customer);
+                              }),
+                        ),
+                      ),
+                    ),
+            ],
+          )),
     );
   }
 
