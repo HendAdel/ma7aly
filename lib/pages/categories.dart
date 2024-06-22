@@ -13,8 +13,8 @@ class CategoriesPage extends StatefulWidget {
 }
 
 class _CategoriesPageState extends State<CategoriesPage> {
-  // List<Category>? categoriesList;
-  List<Category>? categories;
+  List<Category>? categoriesList;
+
   @override
   void initState() {
     getCategories();
@@ -26,16 +26,16 @@ class _CategoriesPageState extends State<CategoriesPage> {
       var sqlHelper = GetIt.I.get<SqlHelper>();
       var catList = await sqlHelper.db?.query('categories');
       if (catList!.isNotEmpty) {
+        categoriesList = [];
         for (var cat in catList) {
-          categories ??= [];
-          categories?.add(Category.fromJson(cat));
+          categoriesList?.add(Category.fromJson(cat));
         }
       } else {
-        categories = [];
+        categoriesList = [];
       }
       setState(() {});
 
-      print("The Data >>>>> ${categories}");
+      print("The Data >>>>> ${categoriesList}");
     } catch (e) {
       print('Error in get Categories $e');
     }
@@ -48,20 +48,28 @@ class _CategoriesPageState extends State<CategoriesPage> {
         title: const Text("Categories"),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(context,
+              onPressed: () async {
+                var result = await Navigator.push(context,
                     MaterialPageRoute(builder: (ctx) => CategoryEdit()));
+                if (result ?? false) {
+                  getCategories();
+                }
               },
               icon: const Icon(Icons.add))
         ],
       ),
       body: Padding(
           padding: const EdgeInsets.all(20),
-          child: categories == null
+          child: categoriesList == null
               ? CircularProgressIndicator()
               : SingleChildScrollView(
                   child: PaginatedDataTable(
+                    showEmptyRows: false,
+                    horizontalMargin: 20,
                     rowsPerPage: 10,
+                    checkboxHorizontalMargin: 12,
+                    columnSpacing: 20,
+                    showFirstLastButtons: true,
                     // headingTextStyle: TextStyle(color: Colors.white, fontSize: 14),
                     headingRowColor: MaterialStatePropertyAll(
                         Theme.of(context).primaryColor),
@@ -76,17 +84,79 @@ class _CategoriesPageState extends State<CategoriesPage> {
                       DataColumn(label: Text('Actions')),
                     ],
 
-                    source: DataSource(categories!),
+                    source: DataSource(
+                        categories: categoriesList!,
+                        onUpdate: (Category) async {
+                          var updateResult = await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (ctx) => CategoryEdit(
+                                        category: Category,
+                                      )));
+                          if (updateResult ?? false) {
+                            getCategories();
+                          }
+                        },
+                        onDelete: (Category) async {
+                          await onDeleteCat(Category);
+                        }),
                   ),
                 )),
     );
+  }
+
+  Future<void> onDeleteCat(Category category) async {
+    try {
+      var dialogResult = await showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Delete Category'),
+              content:
+                  const Text('Are you sure you want to delete this category?'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, false);
+                  },
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context, true);
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            );
+          });
+      if (dialogResult ?? false) {
+        var sqlHelper = GetIt.I.get<SqlHelper>();
+        await sqlHelper.db!
+            .delete('categories', where: 'catId=?', whereArgs: [category.id]);
+        getCategories();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        backgroundColor: Colors.red,
+        content: Text(
+          'Error on Deleteing Category ${category.name}',
+          style: TextStyle(color: Colors.white),
+        ),
+      ));
+    }
   }
 }
 
 class DataSource extends DataTableSource {
   List<Category>? categories;
-  DataSource(this.categories);
+  void Function(Category)? onUpdate;
+  void Function(Category)? onDelete;
 
+  DataSource(
+      {required this.categories,
+      required this.onUpdate,
+      required this.onDelete});
   @override
   DataRow? getRow(int index) {
     return DataRow(cells: [
@@ -97,12 +167,17 @@ class DataSource extends DataTableSource {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              onUpdate!(categories![index]);
+            },
             icon: const Icon(Icons.edit),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              onDelete!(categories![index]);
+            },
             icon: const Icon(Icons.delete),
+            color: Colors.red,
           )
         ],
       ))

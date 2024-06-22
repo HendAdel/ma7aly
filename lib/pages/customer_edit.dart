@@ -1,31 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
-import 'package:ma7aly/models/category.dart';
+import 'package:ma7aly/models/customer.dart';
 import 'package:ma7aly/widgets/app_elevated_button.dart';
 import 'package:ma7aly/widgets/app_text_form_field.dart';
 import 'package:sqflite/sqflite.dart';
 
-class CategoryEdit extends StatefulWidget {
-  final Category? category;
+class CustomerEdit extends StatefulWidget {
+  final Customer? customer;
 
-  const CategoryEdit({this.category, super.key});
+  const CustomerEdit({this.customer, super.key});
 
   @override
-  State<CategoryEdit> createState() => _CategoryEditState();
+  State<CustomerEdit> createState() => _CustomerEditState();
 }
 
-class _CategoryEditState extends State<CategoryEdit> {
+class _CustomerEditState extends State<CustomerEdit> {
   TextEditingController? nameTextController;
-  TextEditingController? descriptionTextController;
+  TextEditingController? addressTextController;
+  TextEditingController? phoneTextController;
   var formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     nameTextController =
-        TextEditingController(text: widget.category?.name ?? '');
-    descriptionTextController =
-        TextEditingController(text: widget.category?.description ?? '');
+        TextEditingController(text: widget.customer?.custName ?? '');
+    addressTextController =
+        TextEditingController(text: widget.customer?.custAddress ?? '');
+    phoneTextController =
+        TextEditingController(text: widget.customer?.custPhoneNo ?? '');
     super.initState();
   }
 
@@ -34,7 +37,7 @@ class _CategoryEditState extends State<CategoryEdit> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            widget.category == null ? 'Add New Category' : 'Edit Category'),
+            widget.customer == null ? 'Add New Customer' : 'Edit Customer'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -56,21 +59,34 @@ class _CategoryEditState extends State<CategoryEdit> {
                 height: 20,
               ),
               AppTextFormField(
-                  labelText: 'Describtion',
-                  controller: descriptionTextController,
+                  labelText: 'Address',
+                  controller: addressTextController,
                   validator: (value) {
                     if (value!.isEmpty) {
-                      return 'Describtion is required';
+                      return 'Address is required';
                     }
                     return null;
                   }),
               const SizedBox(
                 height: 20,
               ),
+              AppTextFormField(
+                labelText: 'Phone',
+                controller: phoneTextController,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Phone number is required';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
+                height: 20,
+              ),
               AppElevatedButton(
-                  label: widget.category == null
-                      ? 'Save New Category'
-                      : "Update Category",
+                  label: widget.customer == null
+                      ? 'Save New Customer'
+                      : "Update Customer",
                   onPressed: () async {
                     await onSave();
                   })
@@ -84,33 +100,34 @@ class _CategoryEditState extends State<CategoryEdit> {
   Future<void> onSave() async {
     try {
       if (formKey.currentState!.validate()) {
-        
         var sqlHelper = GetIt.I.get<SqlHelper>();
-
-        if (widget.category == null) {// Add New Category
+        if (widget.customer == null) {
+          // Add new Customer
           await sqlHelper.db!.insert(
-              'categories',
+              'customers',
               conflictAlgorithm: ConflictAlgorithm.replace,
               {
-                'catName': nameTextController?.text,
-                'catDescription': descriptionTextController?.text
+                'custName': nameTextController?.text,
+                'custAddress': addressTextController?.text,
+                'custPhoneNo': phoneTextController?.text
               });
         } else {
-          // Update edited category
+          // Update edited Customer
           await sqlHelper.db!.update(
-              'categories',
+              'customers',
               {
-                'catName': nameTextController?.text,
-                'catDescription': descriptionTextController?.text
+                'custName': nameTextController?.text,
+                'custAddress': addressTextController?.text,
+                'custPhoneNo': phoneTextController?.text
               },
-              where: 'catId =?',
-              whereArgs: [widget.category?.id]);
+              where: 'custId =?',
+              whereArgs: [widget.customer?.custId]);
         }
 
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: Theme.of(context).primaryColor,
           content: Text(
-            widget.category == null ? 'Category Added' : 'Category Updated',
+            widget.customer == null ? 'Customer Added' : 'Customer Updated',
             style: TextStyle(color: Colors.white),
           ),
         ));
@@ -120,7 +137,7 @@ class _CategoryEditState extends State<CategoryEdit> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.red,
         content: Text(
-          'Error in Adding Category $e',
+          'Error in Adding Customer $e',
           style: TextStyle(color: Colors.white),
         ),
       ));

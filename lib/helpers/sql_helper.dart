@@ -39,10 +39,12 @@ class SqlHelper {
       proId integer primary key,
       proName text,
       proDescription text,
-      price double,
+      price real,
       stockCount integer,
       image blob,
-      categoryId integer
+      categoryId integer,
+      foreign key(categoryId) references categories(catId) ON Delete restrict
+
       ) """);
       batch.execute("""Create table If not exists customers(
       custId integer primary key,
@@ -51,17 +53,23 @@ class SqlHelper {
       custPhoneNo text
       ) """);
       batch.execute("""Create table If not exists orders(
-      Id integer primary key,
+      ordId integer primary key,
       invoiceNo text,
       orderDate text,
-      discount double,
-      customerId integer
+      orderTotal real,
+      discount real,
+      customerId integer,
+      foreign key(customerId) references customers(custId) ON Delete restrict
+
       ) """);
       batch.execute("""Create table If not exists ordersProducts(
       Id integer primary key,
       orderId integer,
       productId integer,      
-      productCount integer
+      productCount integer,
+      foreign key(orderId) references orders(ordId) ON Delete restrict,
+      foreign key(productId) references products(proId) ON Delete restrict
+
       ) """);
 
       var createTablesResult = await batch.commit();
