@@ -1,7 +1,5 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/pages/categories.dart';
@@ -9,7 +7,6 @@ import 'package:ma7aly/pages/customers.dart';
 import 'package:ma7aly/pages/new_order.dart';
 import 'package:ma7aly/pages/orders.dart';
 import 'package:ma7aly/pages/products.dart';
-import 'package:ma7aly/pages/test_table.dart';
 import 'package:ma7aly/widgets/header_card.dart';
 import 'package:ma7aly/widgets/grid_view_items.dart';
 
@@ -28,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   void initHomePage() async {
+    await GetIt.I.get<SqlHelper>().registerForeignKey();
     await GetIt.I.get<SqlHelper>().createTables();
   }
 

@@ -3,6 +3,7 @@ import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/models/category.dart';
 import 'package:ma7aly/pages/category_edit.dart';
+import 'package:ma7aly/widgets/ma7aly_table.dart';
 // import 'package:data_table_2/data_table_2.dart';
 
 class CategoriesPage extends StatefulWidget {
@@ -99,27 +100,13 @@ class _CategoriesPageState extends State<CategoriesPage> {
                 ? const CircularProgressIndicator()
                 : Expanded(
                     child: SingleChildScrollView(
-                      child: PaginatedDataTable(
-                        showEmptyRows: false,
-                        horizontalMargin: 20,
-                        rowsPerPage: 10,
-                        checkboxHorizontalMargin: 12,
-                        columnSpacing: 20,
-                        showFirstLastButtons: true,
-                        // headingTextStyle: TextStyle(color: Colors.white, fontSize: 14),
-                        headingRowColor: MaterialStatePropertyAll(
-                            Theme.of(context).primaryColor),
-                        // border: TableBorder.all(color: Colors.black),
-                        // decoration: BoxDecoration(border: Border.all(color: Colors.black)),
-                        // showBottomBorder: true,
-                        showCheckboxColumn: true,
+                      child: Ma7alyTable(
                         columns: const [
                           DataColumn(label: Text('Category ID')),
                           DataColumn(label: Text('Category Name')),
                           DataColumn(label: Text('Category Description')),
                           DataColumn(label: Text('Actions')),
                         ],
-
                         source: DataSource(
                             categories: categoriesList!,
                             onUpdate: (Category) async {
@@ -180,7 +167,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: Colors.red,
         content: Text(
-          'Error on Deleteing Category ${category.name}',
+          'Error on Deleteing Category ${category.name} : $e',
           style: TextStyle(color: Colors.white),
         ),
       ));

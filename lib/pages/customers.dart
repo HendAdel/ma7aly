@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:ma7aly/helpers/sql_helper.dart';
 import 'package:ma7aly/models/customer.dart';
 import 'package:ma7aly/pages/customer_edit.dart';
+import 'package:ma7aly/widgets/ma7aly_table.dart';
 
 class CustomersPage extends StatefulWidget {
   const CustomersPage({Key? key}) : super(key: key);
@@ -101,17 +102,8 @@ class _CustomersPageState extends State<CustomersPage> {
                   ? const CircularProgressIndicator()
                   : Expanded(
                       child: SingleChildScrollView(
-                        child: PaginatedDataTable(
-                          showEmptyRows: false,
-                          horizontalMargin: 20,
-                          rowsPerPage: 10,
-                          checkboxHorizontalMargin: 12,
-                          columnSpacing: 20,
-                          showFirstLastButtons: true,
-                          headingRowColor: MaterialStatePropertyAll(
-                              Theme.of(context).primaryColor),
-                          showCheckboxColumn: true,
-                          columns: [
+                        child: Ma7alyTable(
+                          columns: const [
                             DataColumn(label: Text('customer ID')),
                             DataColumn(label: Text('customer Name')),
                             DataColumn(label: Text('customer Address')),

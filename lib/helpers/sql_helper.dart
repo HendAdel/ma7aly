@@ -27,9 +27,16 @@ class SqlHelper {
     }
   }
 
+  Future<void> registerForeignKey() async {
+    await db!.rawQuery("""Pragma foreign_keys = ON""");
+    var pragmaResult = await db!.rawQuery("""Pragma foreign_keys""");
+    print(pragmaResult);
+  }
+
   Future<bool> createTables() async {
     try {
       var batch = db!.batch();
+
       batch.execute("""Create table If not exists categories(
       catId integer primary key,
       catName text,
@@ -41,11 +48,9 @@ class SqlHelper {
       proDescription text,
       price real,
       stockCount integer,
-      image blob,
+      image text,
       categoryId integer,
-      foreign key(categoryId) references categories(catId) ON Delete restrict
-
-      ) """);
+      foreign key(categoryId) references categories(catId) ON Delete restrict) """);
       batch.execute("""Create table If not exists customers(
       custId integer primary key,
       custName text,
